@@ -85,6 +85,8 @@
 
                     @php
                         $role = auth()->user()->role;
+                        return redirect()->route($role . '.books.index')
+    ->with('success', 'Book deleted successfully.');
 
                         $showRoute = match ($role) {
                             'admin' => route('admin.books.show', $book),
