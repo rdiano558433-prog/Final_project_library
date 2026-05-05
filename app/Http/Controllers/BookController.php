@@ -75,41 +75,47 @@ class BookController extends Controller
     }
 
     public function update(Request $request, Book $book)
-    {
-        $validated = $request->validate([
-            'title'          => ['required', 'string', 'max:255'],
-            'author'         => ['required', 'string', 'max:255'],
-            'isbn'           => ['required', 'string', 'unique:books,isbn,' . $book->id],
-            'category'       => ['nullable', 'string', 'max:100'],
-            'publisher'      => ['nullable', 'string', 'max:255'],
-            'published_year' => ['nullable', 'integer', 'min:1000', 'max:' . date('Y')],
-            'total_copies'   => ['required', 'integer', 'min:1'],
-            'description'    => ['nullable', 'string'],
-        ]);
+{
+    $validated = $request->validate([
+        'title'          => ['required', 'string', 'max:255'],
+        'author'         => ['required', 'string', 'max:255'],
+        'isbn'           => ['required', 'string', 'unique:books,isbn,' . $book->id],
+        'category'       => ['nullable', 'string', 'max:100'],
+        'publisher'      => ['nullable', 'string', 'max:255'],
+        'published_year' => ['nullable', 'integer', 'min:1000', 'max:' . date('Y')],
+        'total_copies'   => ['required', 'integer', 'min:1'],
+        'description'    => ['nullable', 'string'],
+    ]);
 
-        $diff = $validated['total_copies'] - $book->total_copies;
-        $validated['available_copies'] = max(0, $book->available_copies + $diff);
+    $diff = $validated['total_copies'] - $book->total_copies;
+    $validated['available_copies'] = max(0, $book->available_copies + $diff);
 
-        if ($request->hasFile('cover_image')) {
-            $validated['cover_image'] = $request->file('cover_image')->store('covers', 'public');
-        }
-
-        $book->update($validated);
-
-        return redirect()->route('books.index')
-                         ->with('success', 'Book updated successfully.');
+    if ($request->hasFile('cover_image')) {
+        $validated['cover_image'] = $request->file('cover_image')->store('covers', 'public');
     }
 
-    public function destroy(Book $book)
-    {
-        if ($book->activeBorrowings()->count() > 0) {
-            return back()->with('error', 'Cannot delete a book that is currently borrowed.');
-        }
+    $book->update($validated);
 
-        $book->delete();
-        return redirect()->route('books.index')
-                         ->with('success', 'Book deleted successfully.');
+
+    $role = auth()->user()->role;
+
+    return redirect()->route($role . '.books.index')
+        ->with('success', 'Book updated successfully.');
+}
+public function destroy(Book $book)
+{
+    if ($book->activeBorrowings()->count() > 0) {
+        return back()->with('error', 'Cannot delete a book that is currently borrowed.');
     }
+
+    $book->delete();
+
+    
+    $role = auth()->user()->role;
+
+    return redirect()->route($role . '.books.index')
+        ->with('success', 'Book deleted successfully.');
+}
 
     public function search(Request $request)
     {
