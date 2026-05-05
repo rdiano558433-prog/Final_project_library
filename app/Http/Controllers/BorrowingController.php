@@ -119,34 +119,34 @@ class BorrowingController extends Controller
         return view('user.my-books', compact('borrowings'));
     }
 
-    public function create()
+   public function create()
 {
-    $books = Book::all();
-    $users = User::all();
-
-    return view('borrowings.create', compact('books', 'users'));
+    return view('borrowings.create', [
+        'users' => User::where('role', 'user')->get(),
+        'books' => Book::all()
+    ]);
 }
 
 public function store(Request $request)
 {
     $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'book_id' => 'required|exists:books,id',
+        'user_id'  => 'required|exists:users,id',
+        'book_id'  => 'required|exists:books,id',
         'due_date' => 'required|date',
-        'notes' => 'nullable|string',
+        'notes'    => 'nullable|string',
     ]);
 
     Borrowing::create([
-        'user_id' => $request->user_id,
-        'book_id' => $request->book_id,
+        'user_id'     => $request->user_id,
+        'book_id'     => $request->book_id,
+        'issued_by'   => auth()->id(),
         'borrow_date' => now(),
-        'due_date' => $request->due_date,
-        'status' => 'borrowed',
-        'notes' => $request->notes,
+        'due_date'    => $request->due_date,
+        'status'      => 'borrowed',
+        'notes'       => $request->notes,
     ]);
 
-    return redirect()
-        ->route(auth()->user()->role . '.borrowings.index')
+    return redirect()->route(auth()->user()->role . '.borrowings.index')
         ->with('success', 'Book successfully borrowed!');
 }
 

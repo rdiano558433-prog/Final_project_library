@@ -79,7 +79,7 @@
                         @forelse($recentBorrowings as $b)
                         <tr class="hover:bg-gray-50">
                             <td class="py-2 font-medium text-gray-800">{{ Str::limit($b->user->name, 15) }}</td>
-                            <td class="py-2 text-gray-600">{{ Str::limit($b->book->title, 20) }}</td>
+                            <td class="py-2 text-gray-600">{{ Str::limit($b->book?->title ?? 'Deleted Book', 25) }}</td>
                             <td class="py-2 text-gray-500">{{ $b->due_date->format('M d') }}</td>
                             <td class="py-2">
                                 @php
@@ -109,7 +109,7 @@
                 <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
                     <div>
                         <p class="font-medium text-gray-800 text-sm">{{ $b->user->name }}</p>
-                        <p class="text-gray-500 text-xs">{{ Str::limit($b->book->title, 30) }}</p>
+                        <p class="text-gray-500 text-xs">{{ Str::limit($b->book?->title ?? 'Deleted Book', 25) }}</p>
                     </div>
                     <div class="text-right">
                         <p class="text-red-600 text-sm font-semibold">{{ $b->due_date->diffForHumans() }}</p>

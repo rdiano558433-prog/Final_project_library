@@ -58,8 +58,8 @@
 
                         {{-- SAFE BOOK (FIX FOR YOUR ERROR) --}}
                         <td class="py-2 text-gray-500">
-                            {{ \Illuminate\Support\Str::limit($b->book?->title ?? 'Deleted Book', 20) }}
-                        </td>
+    {{ Str::limit($b->book?->title ?? 'Deleted Book', 20) }}
+</td>
 
                         <td class="py-2 text-gray-400 text-xs">
                             {{ $b->due_date?->format('M d') ?? '—' }}

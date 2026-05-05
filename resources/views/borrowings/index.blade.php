@@ -64,8 +64,8 @@
 
                     {{-- ✅ FIXED BOOK NULL ERROR --}}
                     <td class="px-5 py-3 text-gray-600">
-                        {{ $b->book?->title ?? 'Deleted Book' }}
-                    </td>
+    {{ Str::limit($b->book?->title ?? 'Deleted Book', 25) }}
+</td>
 
                     <td class="px-5 py-3 text-gray-500">
                         {{ $b->borrow_date?->format('M d, Y') ?? '—' }}
