@@ -42,7 +42,7 @@
 
         </form>
 
-        @if(auth()->user()->isAdminOrStaff())
+       @if(in_array(auth()->user()->role, ['admin', 'staff']))
             <a href="{{ auth()->user()->isAdmin() ? route('admin.books.create') : route('staff.books.create') }}"
                class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg text-sm font-medium whitespace-nowrap">
                 + Add Book
@@ -92,11 +92,7 @@
         default => route('user.books.show', $book),
     };
 
-    $indexRoute = match ($role) {
-        'admin' => route('admin.books.index'),
-        'staff' => route('staff.books.index'),
-        default => route('user.books.index'),
-    };
+
 @endphp
 
                     <a href="{{ $showRoute }}" class="text-blue-600 hover:underline text-xs font-medium">
