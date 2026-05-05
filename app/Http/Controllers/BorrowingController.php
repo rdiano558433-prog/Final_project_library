@@ -119,5 +119,13 @@ class BorrowingController extends Controller
         return view('user.my-books', compact('borrowings'));
     }
 
+    public function create()
+{
+    $books = Book::all();
+    $users = User::all();
+
+    return view('borrowings.create', compact('books', 'users'));
+}
+
     
 }
