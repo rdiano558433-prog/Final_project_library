@@ -84,16 +84,20 @@
                     </span>
 
                     @php
-                        $role = auth()->user()->role;
-                        return redirect()->route($role . '.books.index')
-    ->with('success', 'Book deleted successfully.');
+    $role = auth()->user()->role;
 
-                        $showRoute = match ($role) {
-                            'admin' => route('admin.books.show', $book),
-                            'staff' => route('staff.books.show', $book),
-                            default => route('user.books.show', $book),
-                        };
-                    @endphp
+    $showRoute = match ($role) {
+        'admin' => route('admin.books.show', $book),
+        'staff' => route('staff.books.show', $book),
+        default => route('user.books.show', $book),
+    };
+
+    $indexRoute = match ($role) {
+        'admin' => route('admin.books.index'),
+        'staff' => route('staff.books.index'),
+        default => route('user.books.index'),
+    };
+@endphp
 
                     <a href="{{ $showRoute }}" class="text-blue-600 hover:underline text-xs font-medium">
                         Details →
