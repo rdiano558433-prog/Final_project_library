@@ -127,5 +127,28 @@ class BorrowingController extends Controller
     return view('borrowings.create', compact('books', 'users'));
 }
 
+public function store(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'book_id' => 'required|exists:books,id',
+        'due_date' => 'required|date',
+        'notes' => 'nullable|string',
+    ]);
+
+    Borrowing::create([
+        'user_id' => $request->user_id,
+        'book_id' => $request->book_id,
+        'borrow_date' => now(),
+        'due_date' => $request->due_date,
+        'status' => 'borrowed',
+        'notes' => $request->notes,
+    ]);
+
+    return redirect()
+        ->route(auth()->user()->role . '.borrowings.index')
+        ->with('success', 'Book successfully borrowed!');
+}
+
     
 }
